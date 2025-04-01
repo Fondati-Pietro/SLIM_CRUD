@@ -5,6 +5,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 
+
 class AlunniController
 {
  public function index(Request $request, Response $response, $args)
@@ -89,4 +90,30 @@ class AlunniController
   $response->getBody()->write(json_encode($results));
   return $response->withHeader("Content-type", "application/json")->withStatus(200);
  }
+
+ public function sort(Request $request, Response $response, $args){
+  $mysqli_connection = new MySQLi('my_mariadb', 'root', 'ciccio', 'scuola');
+  $results = $mysqli_connection->query("describe alunni");
+  $found = false;
+  $columns = $results->fetch_all(MYSQLI_ASSOC);
+    foreach($columns as $col){
+    if($col['Field'] == $args["col"]){
+      $found = true;
+      break;
+    }
+  }
+  if(!$found){
+    $response->getBody()->write(json_encode("Errore"));
+    return $response->withHeader("Content-type", "application/json")->withStatus(404);
+  }else{
+    $key = $args["key"];
+    $mysqli_connection = new MySQLi('my_mariadb', 'root', 'ciccio', 'scuola');
+    $result = $mysqli_connection->query("SELECT * FROM alunni ORDER BY $key");
+    $results = $result->fetch_all(MYSQLI_ASSOC);
+  
+    $response->getBody()->write(json_encode($results));
+    return $response->withHeader("Content-type", "application/json")->withStatus(200);
+  }
+
+}
 }

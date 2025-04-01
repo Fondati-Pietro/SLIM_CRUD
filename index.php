@@ -35,6 +35,9 @@ $app->get('/alunni/search/{key}', "AlunniController:search");
 // curl http://localhost:8080/alunni/orderBy/nome
 $app->get('/alunni/orderBy/{key}', "AlunniController:orderBy");
 
+// curl http://localhost:8080/alunni/orderBy/nome  --con controllo
+$app->get('/alunni/sort/{key}', "AlunniController:sort");
+
 
 
 $app->run();
