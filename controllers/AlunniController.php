@@ -7,9 +7,10 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 class AlunniController
 {
-public function index(Request $request, Response $response, $args)
+ public function index(Request $request, Response $response, $args)
  {
-   $result = $this->mysqli_connection->query("SELECT * FROM alunni");
+   $mysqli_connection = new MySQLi('my_mariadb', 'root', 'ciccio', 'scuola');
+   $result = $mysqli_connection->query("SELECT * FROM alunni");
    $results = $result->fetch_all(MYSQLI_ASSOC);
 
    $response->getBody()->write(json_encode($results));
@@ -20,9 +21,8 @@ public function index(Request $request, Response $response, $args)
  public function view(Request $request, Response $response, $args)
  {
    $id = $args["id"];
-   $stmt = $this->mysqli_connection->prepare("SELECT * FROM alunni WHERE id = $id");
-   $stmt->execute();
-   $result = $stmt->get_result();
+   $mysqli_connection = new MySQLi('my_mariadb', 'root', 'ciccio', 'scuola');
+   $result = $mysqli_connection->query("SELECT * FROM alunni WHERE id = '$id'");
    $results = $result->fetch_all(MYSQLI_ASSOC);
 
    $response->getBody()->write(json_encode($results));
