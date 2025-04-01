@@ -21,7 +21,6 @@ class AlunniController
    $result = $this->mysqli_connection->query("SELECT * FROM alunni");
    $results = $result->fetch_all(MYSQLI_ASSOC);
 
-
    $response->getBody()->write(json_encode($results));
    return $response->withHeader("Content-type", "application/json")->withStatus(200);
  }
@@ -35,7 +34,6 @@ class AlunniController
    $result = $stmt->get_result();
    $results = $result->fetch_all(MYSQLI_ASSOC);
 
-
    $response->getBody()->write(json_encode($results));
    return $response->withHeader("Content-type", "application/json")->withStatus(200);
  }
@@ -46,12 +44,11 @@ class AlunniController
    $nome = $body["nome"];
    $cognome = $body["cognome"];
    $mysqli_connection = new MySQLi('my_mariadb', 'root', 'ciccio', 'scuola');
-   $result = $mysqli_connection->query("INSERT INTO alunni (nome,cognome) VALUES ('$nome','$cognome');");
-   //$results = $result->fetch_all(MYSQLI_ASSOC);
-
+   $query = "INSERT INTO alunni (nome, cognome) VALUES ('$nome', '$cognome')";
+   $result = $mysqli_connection->query($query);
 
    $response->getBody()->write(json_encode($result));
-   return $response;
+   return $response->withHeader("content-type","application/json")->withstatus(200);
  }
 
 
@@ -64,7 +61,6 @@ class AlunniController
    $mysqli_connection = new MySQLi('my_mariadb', 'root', 'ciccio', 'scuola');
    $result = $mysqli_connection->query("UPDATE alunni SET nome = '$nome', cognome = '$cognome' WHERE id = '$id'");
 
-
    $response->getBody()->write(json_encode($result));
    return $response;
  }
@@ -76,10 +72,30 @@ class AlunniController
    $id = $args["id"];
    $mysqli_connection = new MySQLi('my_mariadb', 'root', 'ciccio', 'scuola');
    $result = $mysqli_connection->query("DELETE FROM alunni WHERE id = '$id'");
-   //$results = $result->fetch_all(MYSQLI_ASSOC);
-
 
    $response->getBody()->write(json_encode($result));
    return $response;
+ }
+
+ public function search(Request $request, Response $response, $args)
+ {
+   $key = $args['key'];
+   $mysqli_connection = new MySQLi('my_mariadb', 'root', 'ciccio', 'scuola');
+   $result = $mysqli_connection->query("SELECT * FROM alunni WHERE nome LIKE '%$key%' OR cognome LIKE '%$key%'");
+   $results = $result->fetch_all(MYSQLI_ASSOC);
+
+   $response->getBody()->write(json_encode($results));
+   return $response->withHeader("Content-type", "application/json")->withStatus(200);
+ }
+
+ public function orderBy(Request $request, Response $response, $args)
+ {
+  $key = $args['key'];
+  $mysqli_connection = new MySQLi('my_mariadb', 'root', 'ciccio', 'scuola');
+  $result = $mysqli_connection->query("SELECT * FROM alunni ORDER BY $key");
+  $results = $result->fetch_all(MYSQLI_ASSOC);
+
+  $response->getBody()->write(json_encode($results));
+  return $response->withHeader("Content-type", "application/json")->withStatus(200);
  }
 }

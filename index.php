@@ -2,12 +2,8 @@
 use Slim\Factory\AppFactory;
 
 
-
-
 require __DIR__ . '/vendor/autoload.php';
 require __DIR__ . '/controllers/AlunniController.php';
-
-
 
 
 $app = AppFactory::create();
@@ -32,6 +28,11 @@ $app->put('/alunni/{id}', "AlunniController:update");
 // curl -X DELETE http://localhost:8080/alunni/2
 $app->delete('/alunni/{id}', "AlunniController:destroy");
 
+// curl http://localhost:8080/alunni/search/bel
+$app->get('/alunni/search/{key}', "AlunniController:search");
+
+// curl http://localhost:8080/alunni/orderBy/nome
+$app->get('/alunni/orderBy/{key}', "AlunniController:orderBy");
 
 
 
